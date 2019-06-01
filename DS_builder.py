@@ -66,7 +66,7 @@ def print_lst(lst):
 # init numbers as good wish
 # they are going to be replaced using list_norepeat
 num_date = 1000
-num_task = 3
+num_task = 5
 num_name = 100
 
 dates, num_date = list_norepeat(rand_date, num_date)
@@ -80,5 +80,42 @@ print_lst(names)
 
 '''
 # Function: for each subject take in several experiment at random date
-# Output: no output.
+# Function: for each experiment, record it as a directory
+# Output: [file], restore ground truth of experiment table
+# Output: [DS], data structure in directory
 '''
+
+time_stamp = time.strftime('%Y%m%d-%H-%M-%S')
+root_dir = 'C:\\Users\\liste\\Documents\\ht_data_structure'
+
+ds_path = os.path.join(root_dir, 'DS_%s' % time_stamp)
+gt_path = os.path.join(root_dir, 'GT_%s.recore' % time_stamp)
+
+assert(not os.path.exists(ds_path))
+assert(not os.path.exists(gt_path))
+
+os.mkdir(ds_path)
+
+with open(gt_path, 'w') as f:
+    for s, _name in enumerate(names):
+        # for each subject
+        # it participants in several tasks
+        _sub = 'Sub%03d' % (s+1)
+        _num = random.randint(10, 20)
+        _dates = random.sample(dates, k=_num)
+        _dates.sort()
+        _tasks = random.choices(tasks, k=_num)
+
+        f.write('[Begin]: %s\n' % _name)
+
+        for i in range(_num):
+            _date = _dates[i]
+            _task = _tasks[i]
+            entry = '%s: (%d|%d) %s, %s\n' % (
+                _name, i+1, _num, _date, _task)
+            print(entry)
+            f.write(entry)
+            os.mkdir(os.path.join(ds_path, '%s_%s_%02d_%s_%s' %
+                                  (_sub, _task, i+1, _date, _name)))
+
+        f.write('[End]: %s\n' % _name)
